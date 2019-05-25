@@ -29,10 +29,10 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        alert('Current Comments detail is: ' + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment)
     }
 
-    render() { 
+    render() {
         return ( 
             <div className="col-12 col-md-9">
                 <Button outline onClick={this.toggleModal}>
@@ -139,7 +139,7 @@ class DishDetailComponent extends Component {
             else return( <div> </div> )
         }
 
-        const RenderDishComment = ({comments}) => {
+        const RenderDishComment = ({comments, addComment, dishId }) => {
             if(comments !== null ){
                 return(
                     <div className="col-12 col-md-5 m-1">
@@ -151,7 +151,7 @@ class DishDetailComponent extends Component {
                                     <p className="list-item"> -- {comment.author}, {comment.date} </p>
                                 </li> )
                             }
-                            <CommentForm />
+                            <CommentForm dishId={dishId} addComment={addComment} />
                         </ul>
                     </div>
                 );
@@ -180,7 +180,10 @@ class DishDetailComponent extends Component {
 
                 <div className="row">
                     <RenderDishDesc dish={dish} />
-                    <RenderDishComment comments={comments} />
+                    <RenderDishComment comments={comments}
+                        addComment={this.props.addComment}
+                        dishId={dish.id}
+                    />
                 </div>
             </div>
          );

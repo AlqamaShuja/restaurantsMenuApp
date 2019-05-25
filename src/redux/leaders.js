@@ -1,7 +1,7 @@
 import { LEADERS } from '../shared/leader';
 
 export const Leaders = (state = LEADERS , action) => {
-    switch (actin.type) {
+    switch (action.type) {
         default:
             return state;
     }
