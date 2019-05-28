@@ -3,6 +3,8 @@ import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbIte
         Button, Modal, ModalHeader, ModalBody, Label, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
+import { Loading } from './LoadingComponent';
+import { baseUrl } from '../shared/baseUrl';
 
 
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -117,17 +119,32 @@ class DishDetailComponent extends Component {
         super(props);
     }
 
-    
-
     render() { 
-        const { dish, comments } = this.props;
 
-        const RenderDishDesc = ({dish}) => {
-            if(dish !== null){
+        const RenderDish = ({dish}) => {
+            if(this.props.isLoading){
+                return(
+                    <div className="container">
+                        <div className="row">
+                            <Loading />
+                        </div>
+                    </div>
+                );
+            }
+            else if(this.props.errMess){
+                return(
+                    <div className="container">
+                        <div className="row">
+                            <h4> { this.props.errMess } </h4>
+                        </div>
+                    </div>
+                );
+            }
+            else if(dish !== null){
                 return(
                     <div className="col-12 col-md-5 m-1">
                         <Card>
-                            <CardImg width="100%" src={dish.image} alt={dish.name} />
+                            <CardImg width="100%" src={ baseUrl + dish.image} alt={dish.name} />
                             <CardBody>
                                 <CardTitle>{ dish.name }</CardTitle>
                                 <CardText>{ dish.description }</CardText>
@@ -140,6 +157,7 @@ class DishDetailComponent extends Component {
         }
 
         const RenderDishComment = ({comments, addComment, dishId }) => {
+            
             if(comments !== null ){
                 return(
                     <div className="col-12 col-md-5 m-1">
@@ -161,28 +179,29 @@ class DishDetailComponent extends Component {
             )
         }
 
-
+        
         return ( 
             <div className="container" >
-
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem>
-                            <Link to="/menu"> Menu </Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem active > {dish.name} </BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3> {dish.name} </h3>
-                        <hr />
+                { this.props.isLoading ? <div></div> : 
+                    <div className="row">
+                        <Breadcrumb>
+                            <BreadcrumbItem>
+                                <Link to="/menu"> Menu </Link>
+                            </BreadcrumbItem>
+                            <BreadcrumbItem active > {this.props.dish.name} </BreadcrumbItem>
+                        </Breadcrumb>
+                        <div className="col-12">
+                            <h3> {this.props.dish.name} </h3>
+                            <hr />
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div className="row">
-                    <RenderDishDesc dish={dish} />
-                    <RenderDishComment comments={comments}
+                    <RenderDish dish={this.props.dish} />
+                    <RenderDishComment comments={this.props.comments}
                         addComment={this.props.addComment}
-                        dishId={dish.id}
+                        dishId={this.props.dish.id }
                     />
                 </div>
             </div>
